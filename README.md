@@ -1,6 +1,6 @@
 # wheels-i18n v1.0.0
 
-**The simplest, fastest, and most powerful internationalization (i18n) plugin for CFWheels 3.x+**
+**The simplest, fastest, and most powerful internationalization (i18n) plugin for Wheels 3.x+**
 
 Lightweight • Zero dependencies • JSON or Database backed • Built-in pluralization • Full fallback support
 

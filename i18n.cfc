@@ -4,14 +4,14 @@ component hint="wheels-i18n" output="false" mixin="global" {
         this.version = "3.0.0";
 
         // 1. Set default configuration settings
-        setDefaultSettings();
+        $setDefaultSettings();
 
         // 2. Load the localization service singleton
-        loadService();
+        $loadService();
         return this;
     }
 
-    private function setDefaultSettings() {
+    private function $setDefaultSettings() {
         // Correct way: Check if the key exists in the global Wheels application scope
         
         local.appKey = application.wo.$appKey();
@@ -36,7 +36,7 @@ component hint="wheels-i18n" output="false" mixin="global" {
         }
     }
 
-    private function loadService() {
+    private function $loadService() {
 
         local.appKey = application.wo.$appKey();
         // Initialize the service and store it in application scope
@@ -50,7 +50,7 @@ component hint="wheels-i18n" output="false" mixin="global" {
         );
 
         // Perform initial load of translation files
-        application[local.appKey].i18n.loadTranslations();
+        application[local.appKey].i18n.$loadTranslations();
     }
 
     /**
@@ -63,14 +63,14 @@ component hint="wheels-i18n" output="false" mixin="global" {
         local.i18nService = application.wheels.i18n;
         
         // 2. Get Translation
-        local.translation = local.i18nService.getTranslation(local.currentLocale, arguments.key);
+        local.translation = local.i18nService.$getTranslation(local.currentLocale, arguments.key);
 
         // 3. Fallback Logic
         if (!len(local.translation)) {
             local.fallbackLocale = get("i18n_fallbackLocale");
             // Only try fallback if it's different from current
             if (local.fallbackLocale != local.currentLocale) {
-                local.translation = local.i18nService.getTranslation(local.fallbackLocale, arguments.key);
+                local.translation = local.i18nService.$getTranslation(local.fallbackLocale, arguments.key);
             }
         }
 

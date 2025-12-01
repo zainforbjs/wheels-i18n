@@ -15,21 +15,21 @@ component output="false" {
         return this;
     }
 
-    public void function loadTranslations() {
+    public void function $loadTranslations() {
         // Always reload if cache is off
         if (!variables.config.cacheTranslations || structIsEmpty(variables.translations)) {
             variables.translations = {};
 
             if (variables.config.translationSource == "database") {
-                loadFromDatabase();
+                $loadFromDatabase();
             } else {
-                loadFromJson();
+                $loadFromJson();
             }
         }
     }
 
     // Load from JSON files (your original logic)
-    private void function loadFromJson() {
+    private void function $loadFromJson() {
         var locales = listToArray(variables.config.availableLocales);
         var basePath = expandPath(variables.config.translationsPath);
 
@@ -44,7 +44,7 @@ component output="false" {
                     if (isJSON(content)) {
                         var data = deserializeJSON(content);
                         var namespace = listFirst(file, ".");
-                        flattenAndStore(loc, namespace, data);
+                        $flattenAndStore(loc, namespace, data);
                     }
                 }
             }
@@ -52,7 +52,7 @@ component output="false" {
     }
 
     // Load from Database
-    private void function loadFromDatabase() {
+    private void function $loadFromDatabase() {
         var locales = listToArray(variables.config.availableLocales);
 
         // Generate parameter names :locale1,:locale2,:locale3
@@ -101,9 +101,9 @@ component output="false" {
         
     }
 
-    public string function getTranslation(required string locale, required string key) {
+    public string function $getTranslation(required string locale, required string key) {
         if (!variables.config.cacheTranslations) {
-            loadTranslations();
+            $loadTranslations();
         }
 
         if (
@@ -117,13 +117,13 @@ component output="false" {
     }
 
     // Your original flatten helper
-    private void function flattenAndStore(required string locale, required string prefix, required struct data) {
+    private void function $flattenAndStore(required string locale, required string prefix, required struct data) {
         for (var key in data) {
             var fullKey = prefix & "." & key;
             var value = data[key];
 
             if (isStruct(value)) {
-                flattenAndStore(locale, fullKey, value);
+                $flattenAndStore(locale, fullKey, value);
             } else if (isSimpleValue(value)) {
                 variables.translations[locale][fullKey] = value;
             }
