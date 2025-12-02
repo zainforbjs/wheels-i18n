@@ -33,9 +33,9 @@ Add these settings in your `config/settings.cfm` file:
 set(i18n_defaultLocale="en");
 set(i18n_availableLocales="en,es");
 set(i18n_fallbackLocale="en");
-set(i18n_translationSource="json");     // or "database"
+set(i18n_translationSource="json");
 set(i18n_translationsPath="/app/locales");
-set(i18n_cacheTranslations=false);       // Set to true in production!
+set(i18n_cacheTranslations=false);
 ```
 
 Below is a description of all available i18n configuration settings and their default values:
@@ -43,13 +43,13 @@ Below is a description of all available i18n configuration settings and their de
 | Setting Name | Default | Description  |
 |-------------|-----------------|-----------|
 | i18n_defaultLocale | `en` | Default locale if none is set in session |
-| i18n_availableLocales | `en` | Comma-separated list: "en,es" |
-| i18n_fallbackLocale | `en` | Used if a translation key is missing |
-| i18n_translationSource | `json` | "json" or "database" |
+| i18n_availableLocales | `en` | A comma-separated list of all supported locales: "en,es" |
+| i18n_fallbackLocale | `en` | Used if a translation key is missing in current locale |
+| i18n_translationSource | `json` | Translation method: "json" or "database" |
 | i18n_translationsPath | `/app/locales` | Path for JSON files (only used with json source) |
-| i18n_cacheTranslations | `false` | Cache translations in memory (recommended in prod) |
+| i18n_cacheTranslations | `false` | Cache translations in memory (recommended for production) |
 
-Pro Tip: Set i18n_cacheTranslations=true in production for maximum performance.
+___Pro Tip___: __Set i18n_cacheTranslations=true in production for fast performance.__
 
 ### Step 2: Add Your First Translation
 
@@ -98,10 +98,10 @@ Your application should follow the following localization structure:
   /locales
     /en
       common.json
-      home.json
+      forms.json
     /es
       common.json
-      home.json
+      forms.json
 ```
 
 ### Step 3: Use It Anywhere
@@ -124,9 +124,8 @@ Add these settings in your `config/settings.cfm` file:
 set(i18n_defaultLocale="en");
 set(i18n_availableLocales="en,es");
 set(i18n_fallbackLocale="en");
-set(i18n_translationSource="json");     // or "database"
-set(i18n_translationsPath="/app/locales");
-set(i18n_cacheTranslations=false);       // Set to true in production!
+set(i18n_translationSource="database");
+set(i18n_cacheTranslations=false);
 ```
 
 ### Step 2: Create the Translation Table
@@ -170,7 +169,7 @@ wheels dbmigrate up
 
 ### Step 3: Add Insertions in the i18n_translations Table
 
-Insert your keys in your database table according to your database to run your translation. here's a sample
+Insert your translations keys according to your database to run your translation. here's a sample in MySQL
 
 ```
 INSERT INTO i18n_translations (locale, translation_key, translation_value, createdat, updatedat) VALUES
@@ -213,54 +212,78 @@ That’s it — your translators can now update text instantly.
 
 ___Many agencies love this workflow. You’re in full control — build it exactly how you want.___
 
-## Functions Provided
+## Plugin Functions
 
-- `t( key, [params])` – Translate a string by key
-- `tp( key, count, [params])` – Translate and pluralize key based on count.
-- `changeLocale( locale )` – Set active locale
-- `currentLocale()` – Get active locale
-- `availableLocales()` – Returns available locales
+- `#t("key")#` → Translate
+- `#t("key", name="[param]")#` → With variables
+- `#tp("key", count=[param])#` → Pluralization (.zero, .one, .other)
+- `#currentLocale()#` → Get current language
+- `#changeLocale("es")#` → Switch language
+- `#availableLocales()#` → Array of supported languages
 
 ## Usage
 
-### Basic Translation Example
+### Basic Translation Function - `t()`
+
+The core function to translate a key to the current locale, with parameter interpolation and fallback logic.
 
 ```cfml
-// Translate a key from the default or active locale
-writeOutput( t("welcome.message") );      // Output: Welcome to our application
+// Basic Usage
+#t("common.welcome")#       // (Output: Welcome to our application)
+
+// With parameter interpolation
+#t(key="common.greeting", name="John Doe")#       // (Output: "Hello, John Dow!")
 ```
 
-### Pluralization Example
+### Pluralization Function - `tp()`
+
+Translates a key and automatically selects the correct singular (.one) or plural (.other) form based on the count argument. The count is also available for interpolation as {count}.
+
+Note: This implementation assumes the simple English plural rule (1 is singular, anything else is plural).
 
 ```cfml
-// Translate a key for pluralized terms from the default locale
-writeOutput( tp(key="common.posts", count=0) );     // Output: No Post Found
-writeOutput( tp(key="common.posts", count=1) );     // Output: 1 Post Found
-writeOutput( tp(key="common.posts", count=5) );     // Output: 5 Posts Found
+// Zero usage (Count = 0) 
+#tp(key="common.posts", count=0)#     // (Output: "No Post Found")
+
+// Singular usage (Count = 1)
+#tp(key="common.posts", count=1)#     // (Output: "1 Post Found")
+
+// Plural usage (Count > 1)
+#tp(key="common.posts", count=5)#     // (Output: "5 Posts Found")
 ```
 
-### Change Locale
+### Change Locale - `changeLocale()`
+
+Sets the application locale in Session and returns a boolean based on success.
 
 ```cfml
+// Change to Spanish
 changeLocale("es");
+
+// Unsupported locale
+changeLocale("jp");       // false
 ```
 
-### Get Current Locale
+### Get Current Locale - `currentLocale()`
+
+Gets the current application locale from the Session, or the default locale if not set.
 
 ```cfml
-current = currentLocale();
+locale = currentLocale();       // "en"
 ```
 
-### Get All Available Locales
+### Get All Available Locales - `availableLocales()`
+
+Returns an array of all configured available locales.
 
 ```cfml
-result = availableLocales("test");
+locales = availableLocales();       // ["en", "es", "fr"]
 ```
 
 ## License
 
-MIT
+[MIT](https://github.com/wheels-dev/wheels-i18n/blob/main/LICENSE)
 
 ## Author
 
-wheels-dev
+[Wheels-dev](https://forgebox.io/@wheels%2Ddev)

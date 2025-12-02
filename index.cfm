@@ -65,7 +65,7 @@ set(i18n_cacheTranslations=false); // Set to true in production
         <tr>
             <td><strong>i18n_fallbackLocale</strong></td>
             <td><code>"en"</code></td>
-            <td>The locale to fall back to if a translation is missing in the current locale.</td>
+            <td>The locale to fall back if a translation is missing in the current locale.</td>
         </tr>
         <tr>
             <td><strong>i18n_translationSource</strong></td>
@@ -119,6 +119,17 @@ set(i18n_cacheTranslations=false); // Set to true in production
 }
 </pre>
 
+<h3>Directory Structure</h3>
+<pre>
+/app/locales/
+    /en/
+        common.json
+        forms.json
+    /es/
+        common.json
+        forms.json
+</pre>
+
 <hr>
 
 <h3>Step 3: Use It Anywhere</h3>
@@ -132,16 +143,7 @@ set(i18n_cacheTranslations=false); // Set to true in production
 
 <hr>
 
-<h3>Folder Structure</h3>
-<pre>
-/app/locales/
-    /en/
-        common.json
-        forms.json
-    /es/
-        common.json
-        forms.json
-</pre>
+
 
 <hr>
 
@@ -204,7 +206,7 @@ wheels dbmigrate up
 <hr>
 
 <h3>Step 3: Add Insertions in the i18n_translations Table</h3>
-<p>Insert your keys in your database table according to your database to run your translation. here's a sample</p>
+<p>Insert your translations keys according to your database to run your translation. here's a sample in MySQL</p>
 <pre>
 INSERT INTO i18n_translations (locale, translation_key, translation_value, createdat, updatedat) VALUES
 ('en', 'common.welcome', 'Welcome to our application', NOW(), NOW()),
@@ -221,7 +223,7 @@ INSERT INTO i18n_translations (locale, translation_key, translation_value, creat
 ('es', 'common.posts.other', '{count} Posts Encontrados', NOW(), NOW());
 </pre>
 
-<p>This is MySQL queries, you can change it according to your database</p>
+<hr>
 
 <h3>Step 4: Use It Anywhere</h3>
 <pre>
@@ -248,10 +250,10 @@ INSERT INTO i18n_translations (locale, translation_key, translation_value, creat
 <h2>Plugin Functions (Work in Both JSON & Database Mode)</h2>
 <ul>
     <li><code>#t("key")#</code> → Translate</li>
-    <li><code>#t("key", name="John")#</code> → With variables</li>
-    <li><code>#tp("key", count=5)#</code> → Pluralization (.zero, .one, .other)</li>
-    <li><code>#currentLocale()#</code> → Get current language</li>
+    <li><code>#t("key", name="[param]")#</code> → With variables</li>
+    <li><code>#tp("key", count=[param])#</code> → Pluralization (.zero, .one, .other)</li>
     <li><code>#changeLocale("es")#</code> → Switch language</li>
+    <li><code>#currentLocale()#</code> → Get current language</li>
     <li><code>#availableLocales()#</code> → Array of supported languages</li>
 </ul>
 
@@ -263,12 +265,11 @@ INSERT INTO i18n_translations (locale, translation_key, translation_value, creat
 <p>The core function to translate a key to the current locale, with parameter interpolation and fallback logic.</p>
 
 <pre>
-// Basic usage
-#t("common.welcome")# 
+// Basic Usage
+#t("common.welcome")#      // (Output: Welcome to our application)
 
 // With parameter interpolation
-#t(key="common.greeting", name="John Doe")# 
-// (Assumes: "Hello, {name}!")
+#t(key="common.greeting", name="John Doe")#   // (Output: "Hello, John Doe!")
 </pre>
 
 <h4>Pluralization Function - <code>tp()</code></h4> 
@@ -277,9 +278,9 @@ INSERT INTO i18n_translations (locale, translation_key, translation_value, creat
 <p><strong>Note:</strong> This implementation assumes the simple English plural rule (1 is singular, anything else is plural).</p>
 
 <pre>
-// Singular usage (Count = 1) #tp(key="common.posts", count=1)# // Result: "1 Post Found"
-// Plural usage (Count > 1) #tp(key="common.posts", count=5)# // Result: "5 Posts Found"
-// Zero usage (Count = 0) #tp(key="common.posts", count=0)# // Result: "0 Posts Found" 
+#tp(key="common.posts", count=0)# // Zero usage (Count = 0) (Output: "No Post Found")
+#tp(key="common.posts", count=1)# // Singular usage (Count = 1) (Output: "1 Post Found")
+#tp(key="common.posts", count=5)# // Plural usage (Count > 1) (Output: "5 Posts Found")
 </pre>
 
 <h4>Current Locale - <code>currentLocale()</code></h4>
@@ -294,10 +295,10 @@ locale = currentLocale(); // "en"
 
 <pre>
 // Change to Spanish
-success = changeLocale("es");
+changeLocale("es");
 
 // Unsupported locale
-success = changeLocale("jp"); // false
+changeLocale("jp"); // false
 </pre>
 
 <h4>Available Locales - <code>availableLocales()</code></h4>
