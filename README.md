@@ -125,10 +125,6 @@ Your application should follow the following localization structure:
 
 __Your Are Done!__
 
-### Tutorial Video
-
-![Watch the tutorial](https://raw.githubusercontent.com/wheels-dev/wheels-i18n/main/assets/translation-via-json.mp4)
-
 ## Translation via Database
 
 ### Step 1: Configuration Settings
@@ -211,11 +207,6 @@ INSERT INTO i18n_translations (locale, translation_key, translation_value, creat
 ```
 
 __Your Are Done!__
-
-### Tutorial Video
-
-![Watch the tutorial](https://raw.githubusercontent.com/wheels-dev/wheels-i18n/main/assets/translation-via-database.mp4)
-
 
 ### (Optional) Add Admin Panel
 

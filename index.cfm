@@ -158,9 +158,11 @@ set(i18n_cacheTranslations=false); // Set to true in production
 
 <p>You're done!</p>
 
-<hr>
-
-
+<h3>Tutorial Video</h3>
+<video width="640" height="360" controls>
+  <source src="https://raw.githubusercontent.com/wheels-dev/wheels-i18n/main/assets/translation-via-json.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 <hr>
 
@@ -250,6 +252,14 @@ INSERT INTO i18n_translations (locale, translation_key, translation_value, creat
 </pre>
 
 <p>You're done!</p>
+
+<h3>Tutorial Video</h3>
+<video width="640" height="360" controls>
+  <source src="https://raw.githubusercontent.com/wheels-dev/wheels-i18n/main/assets/translation-via-database.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+<hr>
 
 <h4>(Optional) Add Admin Panel</h4>
 <p>Want translators or clients to edit translations live in the browser?</p>
